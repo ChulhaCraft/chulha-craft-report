@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chulha Craft: Interactive Strategic Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Visualization & Content Choices: 
+        - Welcome: Overview text.
+        - Vision: Structured text, keyword highlights, accordions.
+        - Market Pulse: Line/Bar charts (Chart.js) for market growth (Food Delivery, D2C).
+        - Naming: Interactive cards for name options, comparative tables.
+        - Operations: Interactive checklist/accordion for licenses, Donut/Bar chart (Chart.js) for startup costs.
+        - Funding/Marketing: Accordions for funding schemes, bulleted lists for marketing.
+        - Launchpad: Bulleted lists for next steps.
+        - Justification: Visualizing data, interactive exploration for creative options, and structured access to dense information.
+        - Libraries: Chart.js, Vanilla JS, Tailwind CSS. Unicode for icons.
+    -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .tab-active {
+            border-bottom-width: 4px;
+            border-color: #c2410c; /* Tailwind orange-700 */
+            color: #c2410c;
+            font-weight: 600;
+        }
+        .tab-inactive {
+            border-bottom-width: 4px;
+            border-color: transparent;
+            color: #57534e; /* Tailwind stone-600 */
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-button.open + .accordion-content {
+            max-height: 1000px; /* Adjust as needed */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Default max-width */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Base height */
+            max-height: 400px; /* Max height */
+        }
+        @media (min-width: 768px) { /* md breakpoint */
+            .chart-container {
+                height: 350px;
+                 max-width: 700px; 
+            }
+        }
+        .name-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .name-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .section-intro {
+            font-size: 1.125rem; /* text-lg */
+            line-height: 1.75rem;
+            color: #44403c; /* stone-700 */
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-amber-50 text-stone-800">
+
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <h1 class="text-2xl sm:text-3xl font-bold text-orange-700">Chulha Craft</h1>
+                <span class="text-sm text-stone-500 hidden sm:block">Interactive Strategic Report</span>
+            </div>
+            <nav class="flex flex-wrap sm:flex-nowrap border-b border-stone-200">
+                <button data-tab="welcome" class="tab-btn px-3 py-3 sm:px-4 sm:py-4 text-xs sm:text-sm font-medium tab-active">Welcome</button>
+                <button data-tab="vision" class="tab-btn px-3 py-3 sm:px-4 sm:py-4 text-xs sm:text-sm font-medium tab-inactive">The Vision</button>
+                <button data-tab="market" class="tab-btn px-3 py-3 sm:px-4 sm:py-4 text-xs sm:text-sm font-medium tab-inactive">Market Pulse</button>
+                <button data-tab="naming" class="tab-btn px-3 py-3 sm:px-4 sm:py-4 text-xs sm:text-sm font-medium tab-inactive">Crafting The Name</button>
+                <button data-tab="operations" class="tab-btn px-3 py-3 sm:px-4 sm:py-4 text-xs sm:text-sm font-medium tab-inactive">Operations</button>
+                <button data-tab="funding" class="tab-btn px-3 py-3 sm:px-4 sm:py-4 text-xs sm:text-sm font-medium tab-inactive">Funding & Marketing</button>
+                <button data-tab="launchpad" class="tab-btn px-3 py-3 sm:px-4 sm:py-4 text-xs sm:text-sm font-medium tab-inactive">Launchpad</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 sm:p-6 lg:p-8">
+        
+        <section id="welcome" class="tab-content">
+            <h2 class="text-3xl font-semibold text-orange-600 mb-6">Welcome to the Chulha Craft Strategy Hub</h2>
+            <p class="section-intro">
+                This interactive application provides a dynamic overview of the strategic naming report for "Chulha Craft." Explore the vision, market opportunities, branding insights, operational considerations, and financial outlook for this exciting venture that aims to blend traditional Indian culinary experiences with artisanal lifestyle products. Navigate through the sections using the tabs above to uncover the potential of Chulha Craft.
+            </p>
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h3 class="text-xl font-semibold text-stone-700 mb-3">Report at a Glance</h3>
+                <p class="text-stone-600 mb-4">
+                    "Chulha Craft" is envisioned as a unique brand leveraging the authenticity of traditional Indian cooking ("Chulha") with a modern, independent ("Indie") spirit. The business model combines a cloud kitchen specializing in earthenware-cooked biryani with a D2C line of handcrafted lifestyle products, targeting Pune's vibrant market.
+                </p>
+                <ul class="list-disc list-inside text-stone-600 space-y-1">
+                    <li>Dual Focus: Authentic Food & Artisanal Lifestyle.</li>
+                    <li>Target Market: Pune's young, digital-first demographic.</li>
+                    <li>Unique Selling Proposition: Earthenware cooking, handcrafted quality.</li>
+                    <li>Key Challenge: Balancing aggregator reliance with direct customer building.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="vision" class="tab-content hidden">
+            <h2 class="text-3xl font-semibold text-orange-600 mb-6">The Vision: Indie Spirit, Chulha Soul</h2>
+            <p class="section-intro">
+                This section delves into the core identity of Chulha Craft, outlining its foundational concept, dual-pronged business model, and the specific target audience in Pune. Understanding this vision is key to appreciating the strategic choices that follow.
+            </p>
+
+            <div class="space-y-6">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold text-stone-700 mb-2">Core Concept: Fusion of "Indie" and "Chulha"</h3>
+                    <p class="text-stone-600 mb-3">
+                        "Indie" signifies a modern, unique, and authentic approach, appealing to consumers valuing distinctiveness. "Chulha" evokes warmth, home-cooked meals, and traditional Indian cooking, especially using earthenware pots ("handis"). This synergy positions Chulha Craft as both nostalgic and forward-thinking.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm">Authenticity</span>
+                        <span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-sm">Tradition</span>
+                        <span class="bg-lime-100 text-lime-700 px-3 py-1 rounded-full text-sm">Craftsmanship</span>
+                        <span class="bg-sky-100 text-sky-700 px-3 py-1 rounded-full text-sm">Modern</span>
+                        <span class="bg-rose-100 text-rose-700 px-3 py-1 rounded-full text-sm">Independent</span>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold text-stone-700 mb-2">Business Model: Dual-Pronged Approach</h3>
+                    <button class="accordion-button w-full text-left text-lg font-medium text-stone-700 hover:text-orange-600 py-2 flex justify-between items-center">
+                        <span>Cloud Kitchen & Lifestyle Products</span>
+                        <span class="arrow-icon transition-transform duration-300 transform">▼</span>
+                    </button>
+                    <div class="accordion-content">
+                        <p class="text-stone-600 mt-2">
+                            <strong>Culinary Segment:</strong> A cloud kitchen model focusing on biryani cooked in earthenware pots. This leverages Pune's booming food delivery market and biryani's immense popularity (83 million orders on Swiggy in 2024). Earthenware cooking enhances flavor, retains nutrients, and offers a unique selling proposition.
+                        </p>
+                        <p class="text-stone-600 mt-2">
+                            <strong>Lifestyle Extension:</strong> Handmade, earthenware, and artisanal products (e.g., soaps, coasters, copperware, the cooking pots themselves). This taps into the growing D2C market for handcrafted, eco-friendly items (projected $1,204.7B by 2026).
+                        </p>
+                        <p class="text-stone-600 mt-2">
+                            <strong>Synergy:</strong> This dual offering creates cross-promotional opportunities, enhances customer lifetime value, and builds a cohesive brand experience around authenticity and craftsmanship.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold text-stone-700 mb-2">Target Market: Pune's Dynamic Consumer Base</h3>
+                     <button class="accordion-button w-full text-left text-lg font-medium text-stone-700 hover:text-orange-600 py-2 flex justify-between items-center">
+                        <span>Understanding the Pune Consumer</span>
+                        <span class="arrow-icon transition-transform duration-300 transform">▼</span>
+                    </button>
+                    <div class="accordion-content">
+                        <p class="text-stone-600 mt-2">
+                            Pune is a hotspot for cloud kitchens, with over 60% of its population aged 18-35 – youthful, digital-first, and convenience-seeking. They are open to smaller, value-driven brands and show a growing preference for eco-friendly products.
+                        </p>
+                        <p class="text-stone-600 mt-2">
+                            <strong>Positioning:</strong> Chulha Craft will be a premium, authentic, health-conscious brand. The D2C model allows direct customer engagement and better profit margins (e.g., 30-50% for biryani, 30-100% for handmade soaps).
+                        </p>
+                         <p class="text-stone-600 mt-2">
+                            <strong>Strategy:</strong> Hybrid approach – use aggregators for initial visibility, but invest in direct channels (website, loyalty programs) for long-term profitability and customer retention.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="market" class="tab-content hidden">
+            <h2 class="text-3xl font-semibold text-orange-600 mb-6">Market Pulse: Opportunities in Pune</h2>
+            <p class="section-intro">
+                This section visualizes the significant market opportunities for Chulha Craft, focusing on the growth trends in online food delivery and D2C lifestyle brands in India, with a specific lens on Pune. The synergy between these two segments forms a unique market position.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold text-stone-700 mb-3 text-center">Online Food Delivery Growth (India)</h3>
+                    <div class="chart-container h-64 md:h-80">
+                        <canvas id="foodDeliveryChart"></canvas>
+                    </div>
+                    <p class="text-sm text-stone-500 mt-3 text-center">Projected market value in US Billions. CAGR: 22.25% (2025-2033).</p>
+                     <p class="text-stone-600 mt-4">Pune is a key city driving this growth, with a large, digital-first population. Cloud kitchens are vital, but reliance on aggregators (15-30% commission) necessitates building direct customer channels.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold text-stone-700 mb-3 text-center">D2C E-Lifestyle Market Growth (India)</h3>
+                    <div class="chart-container h-64 md:h-80">
+                        <canvas id="d2cLifestyleChart"></canvas>
+                    </div>
+                    <p class="text-sm text-stone-500 mt-3 text-center">Projected market value in US Billions.</p>
+                    <p class="text-stone-600 mt-4">India's e-retail market is set to hit $170-$190B by 2030. Consumers favor eco-friendly, unique D2C brands, offering strong potential for Chulha Craft's lifestyle products with good profit margins.</p>
+                </div>
+            </div>
+             <div class="bg-white p-6 rounded-lg shadow mt-6">
+                <h3 class="text-xl font-semibold text-stone-700 mb-2">Synergy of Food & Lifestyle</h3>
+                <p class="text-stone-600">
+                    Integrating biryani in earthenware with handmade lifestyle products creates a distinctive niche. This allows for cross-selling (e.g., customers enjoying biryani might buy the pots), enhances the brand experience by reinforcing authenticity and craftsmanship, and enables operational efficiencies in marketing and logistics. This shared brand equity amplifies recognition and appeal.
+                </p>
+            </div>
+        </section>
+
+        <section id="naming" class="tab-content hidden">
+            <h2 class="text-3xl font-semibold text-orange-600 mb-6">Crafting The Name: Identity & Appeal</h2>
+            <p class="section-intro">
+                The name "Chulha Craft" itself reflects the brand's core. This section explores the strategic principles behind effective naming and presents alternative options considered, highlighting their rationale and fit. The goal is a name that is memorable, unique, scalable, and culturally resonant.
+            </p>
+
+            <div class="bg-white p-6 rounded-lg shadow mb-6">
+                <h3 class="text-xl font-semibold text-stone-700 mb-3">Strategic Naming Principles</h3>
+                <ul class="list-disc list-inside space-y-2 text-stone-600">
+                    <li><strong>Brand Resonance & Memorability:</strong> Easy to recall, pronounce, and spell. Evoke core values: authenticity, tradition, craftsmanship, modern indie spirit. Keywords: Indie, Chulah, Handi, Mitti, Desi, Craft, Soul, Heritage.</li>
+                    <li><strong>Uniqueness & Differentiation:</strong> Stand out from competitors like Zomato, Swiggy, and other small businesses. Leverage the "Chulha Craft" fusion.</li>
+                    <li><strong>Scalability & Future-Proofing:</strong> Allow for expansion into new food/lifestyle categories without restriction.</li>
+                    <li><strong>Cultural Relevance & Appeal:</strong> Connect with the Indian audience using understood Hindi/Sanskrit words (Rasoi, Zaika, Parampara). Reinforce authentic experiences.</li>
+                </ul>
+            </div>
+
+            <h3 class="text-2xl font-semibold text-stone-700 mb-4">Proposed Business Name Options & Rationale</h3>
+            <div class="space-y-4">
+                <div id="nameOptionsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                </div>
+            </div>
+             <div class="bg-white p-6 rounded-lg shadow mt-6 overflow-x-auto">
+                <h3 class="text-xl font-semibold text-stone-700 mb-3">Comparative Analysis of Blended Names</h3>
+                <table class="min-w-full divide-y divide-stone-200">
+                    <thead class="bg-stone-50">
+                        <tr>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">Name</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">Versatility</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">Brand Story</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">Memorability</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">Balance</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">Scalability</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-stone-200 text-sm text-stone-600">
+                        <tr><td class="px-4 py-2 font-medium">Indie Hearth</td><td class="px-4 py-2">High</td><td class="px-4 py-2">Very High</td><td class="px-4 py-2">High</td><td class="px-4 py-2">Balanced</td><td class="px-4 py-2">High</td></tr>
+                        <tr><td class="px-4 py-2 font-medium">Chulha & Co.</td><td class="px-4 py-2">High</td><td class="px-4 py-2">Medium</td><td class="px-4 py-2">High</td><td class="px-4 py-2">Traditional</td><td class="px-4 py-2">High</td></tr>
+                        <tr><td class="px-4 py-2 font-medium">Desi Delights Studio</td><td class="px-4 py-2">Medium</td><td class="px-4 py-2">High</td><td class="px-4 py-2">Medium</td><td class="px-4 py-2">Balanced</td><td class="px-4 py-2">Medium</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="operations" class="tab-content hidden">
+            <h2 class="text-3xl font-semibold text-orange-600 mb-6">Operational Blueprint: Licenses & Costs</h2>
+            <p class="section-intro">
+                This section outlines the essential operational and initial setup considerations for Chulha Craft in Pune. It covers key licenses, estimated setup costs for the cloud kitchen and lifestyle product line, providing a foundational understanding for launching the venture.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold text-stone-700 mb-3">Key Licenses & Registrations</h3>
+                    <div id="licensesAccordionContainer" class="space-y-2">
+                        </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold text-stone-700 mb-3 text-center">Indicative Startup Cost Breakdown</h3>
+                    <div class="chart-container h-80 md:h-96">
+                        <canvas id="startupCostsChart"></canvas>
+                    </div>
+                     <p class="text-sm text-stone-500 mt-3 text-center">Total estimated: ₹6L - ₹11.47L+.</p>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow mt-6">
+                <h3 class="text-xl font-semibold text-stone-700 mb-3">Initial Setup Cost Details (Cloud Kitchen & Lifestyle)</h3>
+                <button class="accordion-button w-full text-left text-lg font-medium text-stone-700 hover:text-orange-600 py-2 flex justify-between items-center">
+                        <span>View Detailed Cost Categories</span>
+                        <span class="arrow-icon transition-transform duration-300 transform">▼</span>
+                </button>
+                <div class="accordion-content">
+                    <ul class="list-disc list-inside space-y-2 text-stone-600 mt-2">
+                        <li><strong>Cloud Kitchen Rental (Pune):</strong> ₹8k-₹10k/month (100-200 sq ft, Tier II/III) to ₹40k/month (330 sq ft). Security deposit: ₹50k-₹1L.</li>
+                        <li><strong>Machinery & Equipment:</strong> Basic (₹60k-₹90k) to Fully-equipped (₹6L-₹9L). Second-hand options can save costs.</li>
+                        <li><strong>Raw Materials (Initial):</strong> ~₹30k (food). Packaging (Initial): ₹40k-₹60k.</li>
+                        <li><strong>Utilities (Setup):</strong> Gas connection (~₹3.8k), Electricity (varies).</li>
+                        <li><strong>Salaries (Indicative Monthly):</strong> Head Chef (₹25k-₹36k+), Helper (₹15k-₹35k+), Logistics (₹25k-₹50k+), Social Media (₹27k+). A lean startup team is key.</li>
+                        <li><strong>Total Initial Investment Estimate:</strong> ₹6 Lakhs - ₹11.47 Lakhs+ (covering equipment, rent, licenses, marketing, initial inventory, cash reserve).</li>
+                    </ul>
+                    <p class="text-stone-600 mt-3">Cost optimization via bulk purchasing, vendor relationships, and considering second-hand equipment is crucial.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="funding" class="tab-content hidden">
+            <h2 class="text-3xl font-semibold text-orange-600 mb-6">Funding Avenues & Marketing Essentials</h2>
+            <p class="section-intro">
+                Securing capital and establishing a strong market presence are vital for Chulha Craft's success. This section explores potential funding sources, from government schemes to angel investors, and outlines essential marketing and branding strategies for a successful launch in Pune.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold text-stone-700 mb-3">Funding Avenues</h3>
+                    <div id="fundingAccordionContainer" class="space-y-2">
+                        </div>
+                    <p class="text-stone-600 mt-3">A diversified strategy is recommended: start with government schemes (non-dilutive), then explore angel investment or loans as the business scales.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold text-stone-700 mb-3">Marketing & Branding Essentials</h3>
+                     <button class="accordion-button w-full text-left text-lg font-medium text-stone-700 hover:text-orange-600 py-2 flex justify-between items-center">
+                        <span>Key Marketing Strategies & Costs</span>
+                        <span class="arrow-icon transition-transform duration-300 transform">▼</span>
+                    </button>
+                    <div class="accordion-content">
+                        <ul class="list-disc list-inside space-y-2 text-stone-600 mt-2">
+                            <li><strong>Digital Marketing (Pune):</strong> Crucial for cloud kitchens. Packages: ₹1.5k/month (basic) to ₹1.76L/month (comprehensive). Includes SEO, PPC, SMM.</li>
+                            <li><strong>Social Media & Influencers:</strong> SMM services (₹7k-₹22k/month). Micro-influencers (₹1k-₹10k/post). Nano-influencers (₹500-₹2k/post).</li>
+                            <li><strong>Website Development:</strong> Static (₹5k-₹10k), E-commerce (₹25k-₹5L+).</li>
+                            <li><strong>Branding & Graphic Design:</strong> Logo (~₹5k), Brand Kit (~₹15k+). Full branding projects (₹8L-₹25L+).</li>
+                            <li><strong>Food Photography (Pune):</strong> ₹400/image to ₹10k/day. Essential for online appeal.</li>
+                        </ul>
+                        <p class="text-stone-600 mt-3">A strong digital presence (e-commerce site, social media, influencer collaborations) is an investment in direct customer relationships and brand building, reducing reliance on aggregators.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="launchpad" class="tab-content hidden">
+            <h2 class="text-3xl font-semibold text-orange-600 mb-6">Launchpad: Conclusion & Next Steps</h2>
+            <p class="section-intro">
+                The strategic naming and operational planning for "Chulha Craft" lay a strong foundation. This final section summarizes the key takeaways and outlines actionable next steps to bring this unique culinary and lifestyle vision to life in Pune.
+            </p>
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h3 class="text-xl font-semibold text-stone-700 mb-3">Conclusion</h3>
+                <p class="text-stone-600 mb-4">
+                    "Chulha Craft" is poised for success by fusing traditional Indian culinary heritage with modern artisanal craftsmanship. The chosen name and the dual food/lifestyle model offer a unique market position. While initial investment is significant, a phased approach to funding and operations, coupled with strong digital marketing, can lead to sustainable growth and profitability.
+                </p>
+                <h3 class="text-xl font-semibold text-stone-700 mb-3">Recommended Next Steps</h3>
+                <ul class="list-decimal list-inside space-y-2 text-stone-600">
+                    <li><strong>Domain & Social Media Checks:</strong> Secure digital assets for the chosen name immediately.</li>
+                    <li><strong>Consumer Feedback:</strong> Conduct market research (surveys, focus groups in Pune) to validate name appeal.</li>
+                    <li><strong>Legal Consultation:</strong> Perform comprehensive trademark searches and finalize company registration.</li>
+                    <li><strong>Detailed Business Plan:</strong> Develop a full business plan with financial projections and operational strategy.</li>
+                    <li><strong>Funding Applications:</strong> Prepare applications for government schemes (PMFME, SISFS) and explore investor discussions.</li>
+                    <li><strong>Brand Identity Development:</strong> Collaborate with design experts for logo, visual identity, and brand guidelines.</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-stone-800 text-amber-50 py-8 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2025 Chulha Craft Strategic Report Visualization. All rights reserved.</p>
+            <p class="text-xs mt-1">Based on the "Strategic Naming Report: Crafting a Distinct Identity for 'Chulha Craft'".</p>
+        </div>
+    </footer>
+
+<script>
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    const accordionButtons = document.querySelectorAll('.accordion-button');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const targetTab = button.dataset.tab;
+
+            tabButtons.forEach(btn => {
+                btn.classList.remove('tab-active');
+                btn.classList.add('tab-inactive');
+            });
+            button.classList.add('tab-active');
+            button.classList.remove('tab-inactive');
+
+            tabContents.forEach(content => {
+                if (content.id === targetTab) {
+                    content.classList.remove('hidden');
+                } else {
+                    content.classList.add('hidden');
+                }
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    });
+
+    accordionButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            button.classList.toggle('open');
+            const content = button.nextElementSibling;
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+            // Toggle arrow icon
+            const arrowIcon = button.querySelector('.arrow-icon');
+            if (arrowIcon) {
+                arrowIcon.classList.toggle('rotate-180');
+            }
+        });
+    });
+    
+    // Data for Charts
+    const foodDeliveryData = {
+        labels: ['2024', '2033'],
+        datasets: [{
+            label: 'Market Value (USD Billion)',
+            data: [43.47, 265.12],
+            borderColor: '#c2410c', // orange-700
+            backgroundColor: 'rgba(194, 65, 12, 0.2)', // orange-700 with alpha
+            fill: true,
+            tension: 0.1
+        }]
+    };
+
+    const d2cLifestyleData = {
+        labels: ['2024 (E-Retail)', '2028 (E-Lifestyle)', '2030 (E-Retail)'],
+        datasets: [{
+            label: 'Market Value (USD Billion)',
+            data: [60, 45, 180], // Using mid-point for 2030 (170-190)
+            borderColor: '#166534', // green-800
+            backgroundColor: 'rgba(22, 101, 52, 0.2)',
+            fill: true,
+            tension: 0.1
+        }]
+    };
+
+    const startupCostsData = {
+        labels: ['Equipment', 'Rent & Deposit', 'Inventory (Food & Pots)', 'Branding & Marketing', 'Licenses & Reg.', 'Packaging (Initial)'],
+        datasets: [{
+            label: 'Estimated Cost Proportion (Illustrative of Mid-Range Total ~₹8.5L)',
+            data: [350000, 100000, 100000, 100000, 50000, 50000], // Example breakdown for a mid-range for visualization
+            backgroundColor: [
+                'rgba(234, 88, 12, 0.7)', // orange-500
+                'rgba(217, 119, 6, 0.7)', // amber-500
+                'rgba(101, 163, 13, 0.7)', // lime-500
+                'rgba(22, 163, 74, 0.7)', // emerald-500
+                'rgba(6, 182, 212, 0.7)', // cyan-500
+                'rgba(99, 102, 241, 0.7)'  // indigo-500
+            ],
+            borderColor: [
+                'rgba(234, 88, 12, 1)',
+                'rgba(217, 119, 6, 1)',
+                'rgba(101, 163, 13, 1)',
+                'rgba(22, 163, 74, 1)',
+                'rgba(6, 182, 212, 1)',
+                'rgba(99, 102, 241, 1)'
+            ],
+            borderWidth: 1
+        }]
+    };
+    
+    // Chart Configurations
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: { 
+                    color: '#44403c', // stone-700
+                    font: { size: 10 }
+                },
+                grid: { color: '#e7e5e4' } // stone-200
+            },
+            x: {
+                ticks: { 
+                    color: '#44403c',
+                    font: { size: 10 }
+                },
+                grid: { display: false }
+            }
+        },
+        plugins: {
+            legend: { 
+                labels: { 
+                    color: '#44403c',
+                    font: { size: 12 }
+                }
+            },
+            tooltip: {
+                titleFont: { size: 14 },
+                bodyFont: { size: 12 },
+                callbacks: {
+                    label: function(context) {
+                        let label = context.dataset.label || '';
+                        if (label) {
+                            label += ': ';
+                        }
+                        if (context.parsed.y !== null) {
+                            label += '$' + context.parsed.y + 'B';
+                        }
+                        return label;
+                    }
+                }
+            }
+        }
+    };
+
+    const pieChartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: { 
+                    color: '#44403c',
+                    font: { size: 10 },
+                    boxWidth: 15,
+                    padding: 10
+                }
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        let label = context.label || '';
+                        if (label) {
+                            label += ': ';
+                        }
+                        if (context.parsed !== null) {
+                            label += '₹' + context.parsed.toLocaleString('en-IN') + ' (Est.)';
+                        }
+                        return label;
+                    }
+                }
+            }
+        }
+    };
+
+    // Render Charts
+    window.addEventListener('load', () => {
+        if (document.getElementById('foodDeliveryChart')) {
+            new Chart(document.getElementById('foodDeliveryChart'), { type: 'line', data: foodDeliveryData, options: chartOptions });
+        }
+        if (document.getElementById('d2cLifestyleChart')) {
+            new Chart(document.getElementById('d2cLifestyleChart'), { type: 'bar', data: d2cLifestyleData, options: chartOptions });
+        }
+        if (document.getElementById('startupCostsChart')) {
+            new Chart(document.getElementById('startupCostsChart'), { type: 'doughnut', data: startupCostsData, options: pieChartOptions });
+        }
+        populateNameOptions();
+        populateLicenses();
+        populateFundingOptions();
+    });
+
+    // Populate Name Options
+    const nameOptionsData = [
+        { 
+            name: "Mitti Rasoi", 
+            category: "Culinary Heritage",
+            rationale: "'Mitti' (clay/earth) + 'Rasoi' (kitchen). Emphasizes earthenware cooking, naturalness, and home-style meals. Direct and authentic.",
+            keywords: "Earthy, authentic, home, traditional, culinary",
+            imagery: "Rustic clay pots, warm kitchen, aromatic steam."
+        },
+        { 
+            name: "Handi Heritage", 
+            category: "Culinary Heritage",
+            rationale: "'Handi' (traditional clay pot) + 'Heritage'. Highlights slow-cooking tradition and authentic recipes. Evocative and memorable.",
+            keywords: "Tradition, authentic, slow-cooked, legacy, comfort",
+            imagery: "Simmering handi, comforting aromas, legacy of flavors."
+        },
+        {
+            name: "Indie Hearth",
+            category: "Blended Identity",
+            rationale: "'Indie' (modern, unique) + 'Hearth' (warmth, home, traditional cooking). Subtly covers food and lifestyle, creating a cozy, authentic feel.",
+            keywords: "Modern, home, warmth, authentic, comfort, curated",
+            imagery: "Cozy home, inviting kitchen, handcrafted items."
+        },
+        {
+            name: "Chulha & Co.",
+            category: "Blended Identity",
+            rationale: "'Chulha' (tradition) + '& Co.' (modern, collaborative, expansive). Suggests a curated collection beyond just food.",
+            keywords: "Traditional, curated, collection, authentic, modern",
+            imagery: "Traditional kitchen evolving to modern boutique."
+        },
+        {
+            name: "Artisan Earth",
+            category: "Artisanal & Lifestyle",
+            rationale: "'Artisan' (handmade quality) + 'Earth' (natural materials, eco-friendly). Aligns with sustainable goods trend.",
+            keywords: "Handmade, natural, eco-friendly, craft, unique",
+            imagery: "Skilled hands, natural materials, aesthetic & sustainable items."
+        },
+         {
+            name: "Desi Delights Studio",
+            category: "Blended Identity",
+            rationale: "'Desi' (local, authentic) + 'Delights' (culinary joy) + 'Studio' (creative space for artisanal products). Passionately created flavors and crafts.",
+            keywords: "Authentic, joyful, creative, crafted, Indian",
+            imagery: "Vibrant workshop for food and crafts."
+        }
+    ];
+
+    function populateNameOptions() {
+        const container = document.getElementById('nameOptionsContainer');
+        if (!container) return;
+        container.innerHTML = ''; 
+        nameOptionsData.forEach(opt => {
+            const card = `
+                <div class="bg-white p-5 rounded-lg shadow-lg name-card cursor-pointer">
+                    <h4 class="text-lg font-semibold text-orange-600 mb-1">${opt.name}</h4>
+                    <p class="text-xs text-stone-500 mb-2">${opt.category}</p>
+                    <p class="text-sm text-stone-600 mb-2">${opt.rationale}</p>
+                    <p class="text-xs text-stone-500 mb-1"><strong>Keywords:</strong> ${opt.keywords}</p>
+                    <p class="text-xs text-stone-500"><strong>Imagery:</strong> ${opt.imagery}</p>
+                </div>
+            `;
+            container.innerHTML += card;
+        });
+    }
+
+    // Populate Licenses
+    const licensesData = [
+        { name: "Company Registration", detail: "Pvt Ltd (₹11k-₹19k+) or LLP (~₹3.8k). Pvt Ltd better for funding." },
+        { name: "FSSAI License", detail: "Mandatory for food. Basic (₹100 + fees), State (₹2k-₹5k + fees), Central (₹7.5k + fees). Depends on turnover." },
+        { name: "Shops & Establishment Act (Gumasta)", detail: "Maharashtra specific. <9 employees (₹799), >9 employees (₹2.4k)." },
+        { name: "Fire NOC", detail: "Crucial for kitchen safety. ~₹1k (basic). Professional services can be ₹50k+." },
+        { name: "Trademark Registration", detail: "Protect brand name & logo. ~₹6k (incl. attorney fees)." },
+        { name: "GST Registration", detail: "Mandatory if annual turnover > ₹20 lakhs." }
+    ];
+
+    function populateLicenses() {
+        const container = document.getElementById('licensesAccordionContainer');
+        if (!container) return;
+        container.innerHTML = '';
+        licensesData.forEach(license => {
+            const item = `
+                <div>
+                    <button class="accordion-button w-full text-left text-md font-medium text-stone-700 hover:text-orange-600 py-2 flex justify-between items-center">
+                        <span>${license.name}</span>
+                        <span class="arrow-icon transition-transform duration-300 transform">▼</span>
+                    </button>
+                    <div class="accordion-content">
+                        <p class="text-sm text-stone-600 p-2 bg-amber-50 rounded">${license.detail}</p>
+                    </div>
+                </div>
+            `;
+            container.innerHTML += item;
+        });
+        // Re-attach event listeners for new accordion buttons
+        document.querySelectorAll('#licensesAccordionContainer .accordion-button').forEach(button => {
+            button.addEventListener('click', () => {
+                button.classList.toggle('open');
+                const content = button.nextElementSibling;
+                if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                } else {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+                const arrowIcon = button.querySelector('.arrow-icon');
+                if (arrowIcon) {
+                    arrowIcon.classList.toggle('rotate-180');
+                }
+            });
+        });
+    }
+
+    // Populate Funding Options
+    const fundingData = [
+        { name: "Startup India Seed Fund Scheme (SISFS)", detail: "Up to ₹20L grant (PoC/prototype), up to ₹50L investment (market entry/scaling). For DPIIT recognized startups <2 yrs old." },
+        { name: "PMFME Scheme", detail: "35% credit-linked capital subsidy (max ₹10L) for micro food processing. Seed capital for SHGs, branding/marketing support." },
+        { name: "Angel Investors (Pune)", detail: "Networks like Pune Angels Network. Provide capital, mentorship, strategic advisory." },
+        { name: "Small Business Loans (Pune)", detail: "Unsecured loans up to ₹30L (e.g., Open Capital). Interest 11.5%-33% p.a. Piramal Finance (up to ₹10L, from 17% p.a.)." }
+    ];
+
+    function populateFundingOptions() {
+        const container = document.getElementById('fundingAccordionContainer');
+        if (!container) return;
+        container.innerHTML = '';
+        fundingData.forEach(fund => {
+            const item = `
+                <div>
+                    <button class="accordion-button w-full text-left text-md font-medium text-stone-700 hover:text-orange-600 py-2 flex justify-between items-center">
+                        <span>${fund.name}</span>
+                        <span class="arrow-icon transition-transform duration-300 transform">▼</span>
+                    </button>
+                    <div class="accordion-content">
+                        <p class="text-sm text-stone-600 p-2 bg-amber-50 rounded">${fund.detail}</p>
+                    </div>
+                </div>
+            `;
+            container.innerHTML += item;
+        });
+         document.querySelectorAll('#fundingAccordionContainer .accordion-button').forEach(button => {
+            button.addEventListener('click', () => {
+                button.classList.toggle('open');
+                const content = button.nextElementSibling;
+                if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                } else {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+                 const arrowIcon = button.querySelector('.arrow-icon');
+                if (arrowIcon) {
+                    arrowIcon.classList.toggle('rotate-180');
+                }
+            });
+        });
+    }
+
+</script>
+</body>
+</html>
